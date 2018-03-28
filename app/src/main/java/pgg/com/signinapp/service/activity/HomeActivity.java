@@ -7,6 +7,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.amap.api.location.AMapLocation;
@@ -25,15 +27,19 @@ import com.amap.api.maps.model.MyLocationStyle;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import butterknife.Bind;
 import pgg.com.signinapp.R;
+import pgg.com.signinapp.common.Constant;
 import pgg.com.signinapp.service.base.BaseActivity;
+import pgg.com.signinapp.service.domain.AddFaceInfo;
+import pgg.com.signinapp.service.presenter.IHomePresenter;
+import pgg.com.signinapp.service.view.IHomeView;
+import pgg.com.signinapp.util.SPUtils;
 
 /**
  * Created by PDD on 2018/3/28.
  */
 
-public class HomeActivity extends BaseActivity implements LocationSource ,AMapLocationListener {
+public class HomeActivity extends BaseActivity implements LocationSource ,AMapLocationListener,IHomeView{
     Toolbar toolbar;
     MapView mapView;
     private AMap aMap;//地图对象
@@ -45,6 +51,7 @@ public class HomeActivity extends BaseActivity implements LocationSource ,AMapLo
 
     //标识，用于判断是否只显示一次定位信息和用户重新定位
     private boolean isFirstLoc = true;
+    private IHomePresenter presenter;
 
     private Toolbar.OnMenuItemClickListener onMenuItemClick=new Toolbar.OnMenuItemClickListener() {
         @Override
@@ -58,16 +65,19 @@ public class HomeActivity extends BaseActivity implements LocationSource ,AMapLo
             return true;
         }
     };
+    private ProgressBar progressBar_add;
 
     @Override
     protected void loadViewLayout(Bundle savedInstanceState) {
         setContentView(R.layout.activity_main);
         toolbar= (Toolbar) findViewById(R.id.toolbar_view);
         mapView= (MapView) findViewById(R.id.map);
+        progressBar_add = (ProgressBar) findViewById(R.id.progressBar_add);
         toolbar.setTitle("签到");
         toolbar.inflateMenu(R.menu.navigation);
         toolbar.setOnMenuItemClickListener(onMenuItemClick);
         mapView.onCreate(savedInstanceState);// 此方法必须重写
+
     }
 
     @Override
@@ -121,12 +131,12 @@ public class HomeActivity extends BaseActivity implements LocationSource ,AMapLo
 
     @Override
     protected void setListener() {
-
+        presenter=new IHomePresenter(this);
     }
 
     @Override
     protected void processLogic() {
-
+        presenter.addFace2FaceSet(Constant.faceset_token,SPUtils.get(HomeActivity.this, Constant.FACE_TOKEN,"")+"");
     }
 
     @Override
@@ -230,5 +240,30 @@ public class HomeActivity extends BaseActivity implements LocationSource ,AMapLo
     protected void onResume() {
         super.onResume();
         mapView.onResume();
+    }
+
+    @Override
+    public void showProgress() {
+        progressBar_add.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showOnFailMsg() {
+        Toast.makeText(HomeActivity.this,"添加失败",Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void hideProgress() {
+        progressBar_add.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showSuccessMsg(AddFaceInfo data) {
+        if (data.getFaceset_token().equals(Constant.faceset_token)){
+            Toast.makeText(HomeActivity.this,"添加成功",Toast.LENGTH_SHORT).show();
+        }else {
+            Toast.makeText(HomeActivity.this,"添加失败",Toast.LENGTH_SHORT).show();
+        }
+        Log.e("ssssssssss",data.getFaceset_token());
     }
 }

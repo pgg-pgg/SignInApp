@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
+import android.media.Image;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
@@ -35,7 +36,6 @@ import pgg.com.signinapp.weiget.CameraViewNew;
 
 public class SignInActivity extends BaseActivity implements ISignInView{
     private static String TAG = "CameraObserver";
-    public static String photopath = "";
     @Bind(R.id.button_capture)
     Button buttonCapture;
     @Bind(R.id.progressBar_camera)
@@ -43,6 +43,7 @@ public class SignInActivity extends BaseActivity implements ISignInView{
     private Camera mCamera;
     private CameraViewNew mPreview;
     private ISignInPresenter presenter;
+
 
     @Override
     protected void loadViewLayout(Bundle savedInstanceState) {
@@ -84,13 +85,12 @@ public class SignInActivity extends BaseActivity implements ISignInView{
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
             // TODO Auto-generated method stub
-            Log.d(TAG, " onPictureTaken = " + photopath);
             BitmapFactory.Options options = new BitmapFactory.Options();
             try {
-                options.inSampleSize = 2;
+                options.inSampleSize = 1;
                 Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length, options);
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                 byte[] bytes = baos.toByteArray();
                 String base64 = new String(Base64.encode(bytes, Base64.DEFAULT));
                 presenter.getCompareInfo(SPUtils.get(SignInActivity.this, Constant.FACE_TOKEN,"")+"",base64);

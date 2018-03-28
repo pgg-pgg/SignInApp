@@ -11,7 +11,9 @@ import pgg.com.signinapp.common.Constant;
 import pgg.com.signinapp.data.api.CacheProviders;
 import pgg.com.signinapp.data.api.FaceService;
 import pgg.com.signinapp.data.api.UserService;
+import pgg.com.signinapp.service.domain.AddFaceInfo;
 import pgg.com.signinapp.service.domain.FaceCompareInfo;
+import pgg.com.signinapp.service.domain.FaceSetInfo;
 import pgg.com.signinapp.service.domain.Results;
 import pgg.com.signinapp.service.domain.User;
 import pgg.com.signinapp.util.FileUtils;
@@ -60,6 +62,11 @@ public class HttpData {
         setSubscribe(data,observable);
     }
 
+    public void addFaceToSet(Observer<AddFaceInfo> observer,String faceset_token,String face_tokens){
+        Observable<AddFaceInfo> data=faceService.addFaceToSet(Constant.key,Constant.secret,faceset_token,face_tokens);
+        setSubscribe(data,observer);
+    }
+
     private static <T> void setSubscribe(Observable<T> listObservable, Observer<T> observable) {
         listObservable.observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
@@ -67,7 +74,6 @@ public class HttpData {
     }
 
     private class HttpCacheHandler<T> implements Func1<Reply<T>, T> {
-
         @Override
         public T call(Reply<T> tReply) {
             return tReply.getData();

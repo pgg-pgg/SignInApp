@@ -245,9 +245,7 @@ public class RegisterActivity extends BaseActivity implements IRegisterView {
                             Response response3 = null;
                             try {
                                 response3 = commonOperate.detectBase64(base64, 0, null);
-
                                 String faceToken = getFaceToken(response3);
-                                Log.e("sssssssssssssss",faceToken);
                                 subscriber.onStart();
                                 subscriber.onNext(faceToken);
                                 subscriber.onCompleted();

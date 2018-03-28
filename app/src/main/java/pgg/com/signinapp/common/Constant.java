@@ -23,4 +23,6 @@ public interface Constant {
 
     String FACE_TOKEN="facec_token";
 
+    String faceset_token="946b9cdb96359dd99c3396d42ce4beb5";
+
 }

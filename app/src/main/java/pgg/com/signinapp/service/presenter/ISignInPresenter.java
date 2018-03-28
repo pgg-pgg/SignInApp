@@ -26,7 +26,7 @@ public class ISignInPresenter implements OnLoadDataListener<FaceCompareInfo>{
 
     @Override
     public void onSuccess(FaceCompareInfo data) {
-        mView.showProgress();
+        mView.hideProgress();
         mView.showSuccessMsg(data);
     }
 
