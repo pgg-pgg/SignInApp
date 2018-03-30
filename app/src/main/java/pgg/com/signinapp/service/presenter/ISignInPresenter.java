@@ -1,6 +1,7 @@
 package pgg.com.signinapp.service.presenter;
 
-import pgg.com.signinapp.service.domain.FaceCompareInfo;
+import pgg.com.signinapp.service.domain.Location;
+import pgg.com.signinapp.service.domain.Results;
 import pgg.com.signinapp.service.model.FaceCompareModel;
 import pgg.com.signinapp.service.model.OnLoadDataListener;
 import pgg.com.signinapp.service.view.ISignInView;
@@ -9,7 +10,7 @@ import pgg.com.signinapp.service.view.ISignInView;
  * Created by PDD on 2018/3/28.
  */
 
-public class ISignInPresenter implements OnLoadDataListener<FaceCompareInfo>{
+public class ISignInPresenter implements OnLoadDataListener<Results<Location>>{
 
     private FaceCompareModel mModel;
     private ISignInView mView;
@@ -19,13 +20,13 @@ public class ISignInPresenter implements OnLoadDataListener<FaceCompareInfo>{
         mModel=new FaceCompareModel();
     }
 
-    public void getCompareInfo(String face_token,String image_base64_2){
+    public void signInToServer(String face_token, String image_base64_2, Location location){
         mView.showProgress();
-        mModel.getCompareFaceInfo(this,face_token,image_base64_2);
+        mModel.getCompareFaceInfo(this,face_token,image_base64_2,location);
     }
 
     @Override
-    public void onSuccess(FaceCompareInfo data) {
+    public void onSuccess(Results<Location> data) {
         mView.hideProgress();
         mView.showSuccessMsg(data);
     }
@@ -37,7 +38,7 @@ public class ISignInPresenter implements OnLoadDataListener<FaceCompareInfo>{
     }
 
     @Override
-    public void onRequestCodeFail(FaceCompareInfo data) {
-
+    public void onRequestCodeFail(Results<Location> data) {
+        mView.showOnResponseError(data);
     }
 }

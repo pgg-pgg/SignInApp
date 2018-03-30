@@ -38,6 +38,7 @@ import pgg.com.signinapp.MainActivity;
 import pgg.com.signinapp.R;
 import pgg.com.signinapp.common.Constant;
 import pgg.com.signinapp.service.base.BaseActivity;
+import pgg.com.signinapp.service.domain.AddFaceInfo;
 import pgg.com.signinapp.service.domain.Results;
 import pgg.com.signinapp.service.domain.User;
 import pgg.com.signinapp.service.presenter.IRegisterPresenter;
@@ -81,6 +82,7 @@ public class RegisterActivity extends BaseActivity implements IRegisterView {
     private final String TAG = this.getClass().toString();
     private static String base64;
     private static boolean isHasFace=false;
+    private Bitmap mBitmap;
 
 
     @Override
@@ -232,59 +234,60 @@ public class RegisterActivity extends BaseActivity implements IRegisterView {
                 if (file.exists()){
                     BitmapFactory.Options options=new BitmapFactory.Options();
                     options.inSampleSize=4;
-                    final Bitmap mBitmap =BitmapFactory.decodeFile(images.get(0).path,options);
+                    mBitmap = BitmapFactory.decodeFile(images.get(0).path,options);
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     mBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
                     byte[] bytes = baos.toByteArray();
                     base64 = new String(Base64.encode(bytes, Base64.DEFAULT));
-                    Observable.create(new Observable.OnSubscribe<String>() {
-                        @Override
-                        public void call(Subscriber<? super String> subscriber) {
-                            CommonOperate commonOperate = new CommonOperate(key, secret, false);
-                            //detect first face by local file use base64
-                            Response response3 = null;
-                            try {
-                                response3 = commonOperate.detectBase64(base64, 0, null);
-                                String faceToken = getFaceToken(response3);
-                                subscriber.onStart();
-                                subscriber.onNext(faceToken);
-                                subscriber.onCompleted();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(new Subscriber<String>() {
-                                @Override
-                                public void onStart() {
-                                    progress.setVisibility(View.VISIBLE);
-                                    iv_circle.setVisibility(View.GONE);
-                                }
-
-                                @Override
-                                public void onCompleted() {
-                                    progress.setVisibility(View.GONE);
-                                    iv_circle.setVisibility(View.VISIBLE);
-                                }
-
-                                @Override
-                                public void onError(Throwable e) {
-                                    e.printStackTrace();
-                                }
-
-                                @Override
-                                public void onNext(String sa) {
-                                    if (sa!=null&&!sa.isEmpty()&&!sa.equals("")){
-                                        isHasFace =true;
-                                        iv_circle.setImageBitmap(mBitmap);
-                                        SPUtils.put(RegisterActivity.this,Constant.FACE_TOKEN,sa);
-                                    }else {
-                                        isHasFace=false;
-                                        iv_circle.setImageResource(R.drawable.camera);
-                                        Toast.makeText(RegisterActivity.this,"选取的照片没有检测出人脸照，请重新选取",Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            });
+//                    Observable.create(new Observable.OnSubscribe<String>() {
+//                        @Override
+//                        public void call(Subscriber<? super String> subscriber) {
+//                            CommonOperate commonOperate = new CommonOperate(key, secret, false);
+//                            //detect first face by local file use base64
+//                            Response response3 = null;
+//                            try {
+//                                response3 = commonOperate.detectBase64(base64, 0, null);
+//                                String faceToken = getFaceToken(response3);
+//                                subscriber.onStart();
+//                                subscriber.onNext(faceToken);
+//                                subscriber.onCompleted();
+//                            } catch (Exception e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+//                    }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+//                            .subscribe(new Subscriber<String>() {
+//                                @Override
+//                                public void onStart() {
+//                                    progress.setVisibility(View.VISIBLE);
+//                                    iv_circle.setVisibility(View.GONE);
+//                                }
+//
+//                                @Override
+//                                public void onCompleted() {
+//                                    progress.setVisibility(View.GONE);
+//                                    iv_circle.setVisibility(View.VISIBLE);
+//                                }
+//
+//                                @Override
+//                                public void onError(Throwable e) {
+//                                    e.printStackTrace();
+//                                }
+//
+//                                @Override
+//                                public void onNext(String sa) {
+//                                    if (sa!=null&&!sa.isEmpty()&&!sa.equals("")){
+//                                        isHasFace =true;
+//                                        iv_circle.setImageBitmap(mBitmap);
+//
+//                                    }else {
+//                                        isHasFace=false;
+//                                        iv_circle.setImageResource(R.drawable.camera);
+//                                        Toast.makeText(RegisterActivity.this,"选取的照片没有检测出人脸照，请重新选取",Toast.LENGTH_SHORT).show();
+//                                    }
+//                                }
+//                            });
+                    presenter.addFaceInfo(base64);
                 }
             } else {
                 Toast.makeText(this, "没有数据", Toast.LENGTH_SHORT).show();
@@ -304,14 +307,26 @@ public class RegisterActivity extends BaseActivity implements IRegisterView {
 
     }
 
-    private String getFaceToken(Response response) throws JSONException {
-        if(response.getStatus() != 200){
-            return null;
-        }
-        String res = new String(response.getContent());
-        LogUtils.e("response",res);
-        JSONObject json = new JSONObject(res);
-        String s = json.optJSONArray("faces").optJSONObject(0).optString("face_token");
-        return s;
+    @Override
+    public void onShowSuccessMsg(AddFaceInfo results) {
+        iv_circle.setImageBitmap(mBitmap);
+        isHasFace=true;
+        Toast.makeText(this, "检测成功"+results.getFaceset_token(), Toast.LENGTH_SHORT).show();
     }
+
+    @Override
+    public void onShowFailMsg(String s) {
+        Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
+    }
+
+//    private String getFaceToken(Response response) throws JSONException {
+//        if(response.getStatus() != 200){
+//            return null;
+//        }
+//        String res = new String(response.getContent());
+//        LogUtils.e("response",res);
+//        JSONObject json = new JSONObject(res);
+//        String s = json.optJSONArray("faces").optJSONObject(0).optString("face_token");
+//        return s;
+//    }
 }

@@ -1,8 +1,11 @@
 package pgg.com.signinapp.service.model;
 
+import android.content.Context;
+
 import okhttp3.MultipartBody;
 import pgg.com.signinapp.data.httpData.HttpData;
 import pgg.com.signinapp.data.retrofit.ApiException;
+import pgg.com.signinapp.service.domain.AddFaceInfo;
 import pgg.com.signinapp.service.domain.Results;
 import pgg.com.signinapp.service.domain.User;
 import rx.Observer;
@@ -13,7 +16,7 @@ import rx.Observer;
 
 public class UserModel {
 
-    public void registerToServer(final OnLoadDataListener listener,User user) {
+    public void registerToServer(final OnLoadDataListener listener, User user) {
         HttpData.getInstance().register(new Observer<Results<User>>() {
             @Override
             public void onCompleted() {
@@ -33,7 +36,7 @@ public class UserModel {
                     listener.onRequestCodeFail(results);
                 }
             }
-        }, user);
+        },user);
     }
 
     public void loginToServer(final OnLoadDataListener listener, String id,String password){
@@ -58,5 +61,24 @@ public class UserModel {
 
             }
         },id,password);
+    }
+
+    public void addFaceInfo(final OnDetectFaceListener listener, String image_base64){
+        HttpData.getInstance().addFaceToSet(new Observer<AddFaceInfo>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                listener.onDetectRequestFail(e);
+            }
+
+            @Override
+            public void onNext(AddFaceInfo addFaceInfo) {
+                listener.onDetectSuccess(addFaceInfo);
+            }
+        },image_base64);
     }
 }

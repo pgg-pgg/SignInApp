@@ -7,7 +7,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -31,15 +30,13 @@ import pgg.com.signinapp.R;
 import pgg.com.signinapp.common.Constant;
 import pgg.com.signinapp.service.base.BaseActivity;
 import pgg.com.signinapp.service.domain.AddFaceInfo;
-import pgg.com.signinapp.service.presenter.IHomePresenter;
-import pgg.com.signinapp.service.view.IHomeView;
 import pgg.com.signinapp.util.SPUtils;
 
 /**
  * Created by PDD on 2018/3/28.
  */
 
-public class HomeActivity extends BaseActivity implements LocationSource ,AMapLocationListener,IHomeView{
+public class HomeActivity extends BaseActivity implements LocationSource ,AMapLocationListener{
     Toolbar toolbar;
     MapView mapView;
     private AMap aMap;//地图对象
@@ -51,7 +48,6 @@ public class HomeActivity extends BaseActivity implements LocationSource ,AMapLo
 
     //标识，用于判断是否只显示一次定位信息和用户重新定位
     private boolean isFirstLoc = true;
-    private IHomePresenter presenter;
 
     private Toolbar.OnMenuItemClickListener onMenuItemClick=new Toolbar.OnMenuItemClickListener() {
         @Override
@@ -59,6 +55,8 @@ public class HomeActivity extends BaseActivity implements LocationSource ,AMapLo
             switch (item.getItemId()){
                 case R.id.action_read:
                     Intent intent=new Intent(HomeActivity.this, SignInActivity.class);
+                    intent.putExtra(Constant.LATITUDE,latitude);
+                    intent.putExtra(Constant.LONGITUDE,longitude);
                     startActivity(intent);
                     break;
             }
@@ -66,6 +64,8 @@ public class HomeActivity extends BaseActivity implements LocationSource ,AMapLo
         }
     };
     private ProgressBar progressBar_add;
+    private static double latitude;
+    private static double longitude;
 
     @Override
     protected void loadViewLayout(Bundle savedInstanceState) {
@@ -103,7 +103,6 @@ public class HomeActivity extends BaseActivity implements LocationSource ,AMapLo
         initLoc();
     }
 
-
     private void initLoc() {
         //初始化定位
         mLocationClient = new AMapLocationClient(getApplicationContext());
@@ -131,12 +130,11 @@ public class HomeActivity extends BaseActivity implements LocationSource ,AMapLo
 
     @Override
     protected void setListener() {
-        presenter=new IHomePresenter(this);
+
     }
 
     @Override
     protected void processLogic() {
-        presenter.addFace2FaceSet(Constant.faceset_token,SPUtils.get(HomeActivity.this, Constant.FACE_TOKEN,"")+"");
     }
 
     @Override
@@ -155,8 +153,10 @@ public class HomeActivity extends BaseActivity implements LocationSource ,AMapLo
             if (aMapLocation.getErrorCode() == 0) {
                 //定位成功回调信息，设置相关消息
                 aMapLocation.getLocationType();//获取当前定位结果来源，如网络定位结果，详见官方定位类型表
-                aMapLocation.getLatitude();//获取纬度
-                aMapLocation.getLongitude();//获取经度
+                //获取纬度
+                latitude = aMapLocation.getLatitude();
+                //获取经度
+                longitude = aMapLocation.getLongitude();
                 aMapLocation.getAccuracy();//获取精度信息
                 SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 Date date = new Date(aMapLocation.getTime());
@@ -240,30 +240,5 @@ public class HomeActivity extends BaseActivity implements LocationSource ,AMapLo
     protected void onResume() {
         super.onResume();
         mapView.onResume();
-    }
-
-    @Override
-    public void showProgress() {
-        progressBar_add.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void showOnFailMsg() {
-        Toast.makeText(HomeActivity.this,"添加失败",Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void hideProgress() {
-        progressBar_add.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void showSuccessMsg(AddFaceInfo data) {
-        if (data.getFaceset_token().equals(Constant.faceset_token)){
-            Toast.makeText(HomeActivity.this,"添加成功",Toast.LENGTH_SHORT).show();
-        }else {
-            Toast.makeText(HomeActivity.this,"添加失败",Toast.LENGTH_SHORT).show();
-        }
-        Log.e("ssssssssss",data.getFaceset_token());
     }
 }

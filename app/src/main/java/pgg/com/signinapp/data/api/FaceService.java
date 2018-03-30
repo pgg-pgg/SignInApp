@@ -2,6 +2,7 @@ package pgg.com.signinapp.data.api;
 
 import pgg.com.signinapp.service.domain.AddFaceInfo;
 import pgg.com.signinapp.service.domain.FaceCompareInfo;
+import pgg.com.signinapp.service.domain.FaceInfo;
 import pgg.com.signinapp.service.domain.FaceSetInfo;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -26,4 +27,7 @@ public interface FaceService {
     @POST("faceset/addface")
     Observable<AddFaceInfo> addFaceToSet(@Field("api_key") String api_key, @Field("api_secret") String api_secret,@Field("faceset_token") String faceset_token,@Field("face_tokens") String face_tokens);
 
+    @FormUrlEncoded
+    @POST("detect")
+    Observable<FaceInfo> detectFaceInfo(@Field("api_key") String api_key, @Field("api_secret") String api_secret,@Field("image_base64") String image_base64);
 }

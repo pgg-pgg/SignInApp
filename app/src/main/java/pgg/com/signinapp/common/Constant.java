@@ -25,4 +25,7 @@ public interface Constant {
 
     String faceset_token="946b9cdb96359dd99c3396d42ce4beb5";
 
+    String LATITUDE="latitude";
+    String LONGITUDE="longitude";
+
 }

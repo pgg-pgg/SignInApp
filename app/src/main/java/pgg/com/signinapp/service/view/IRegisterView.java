@@ -1,5 +1,6 @@
 package pgg.com.signinapp.service.view;
 
+import pgg.com.signinapp.service.domain.AddFaceInfo;
 import pgg.com.signinapp.service.domain.Results;
 import pgg.com.signinapp.service.domain.User;
 
@@ -22,4 +23,7 @@ public interface IRegisterView {
 
     void clearEditText();
 
+    void onShowSuccessMsg(AddFaceInfo results);
+
+    void onShowFailMsg(String s);
 }
