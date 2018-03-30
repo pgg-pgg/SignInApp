@@ -8,33 +8,21 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
 import android.util.Base64;
-
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.ui.ImageGridActivity;
 import com.lzy.imagepicker.view.CropImageView;
-import com.megvii.cloud.http.CommonOperate;
-import com.megvii.cloud.http.Response;
 import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.animation.PropertyValuesHolder;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
-
-import pgg.com.signinapp.MainActivity;
 import pgg.com.signinapp.R;
 import pgg.com.signinapp.common.Constant;
 import pgg.com.signinapp.service.base.BaseActivity;
@@ -44,17 +32,9 @@ import pgg.com.signinapp.service.domain.User;
 import pgg.com.signinapp.service.presenter.IRegisterPresenter;
 import pgg.com.signinapp.service.view.IRegisterView;
 import pgg.com.signinapp.util.GlideImageLoader;
-import pgg.com.signinapp.util.LogUtils;
 import pgg.com.signinapp.util.MPermissionUtils;
 import pgg.com.signinapp.util.SPUtils;
 import pgg.com.signinapp.weiget.JellyInterpolator;
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-
-import static pgg.com.signinapp.common.Constant.key;
-import static pgg.com.signinapp.common.Constant.secret;
 
 /**
  * Created by PDD on 2018/3/23.
@@ -239,54 +219,6 @@ public class RegisterActivity extends BaseActivity implements IRegisterView {
                     mBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
                     byte[] bytes = baos.toByteArray();
                     base64 = new String(Base64.encode(bytes, Base64.DEFAULT));
-//                    Observable.create(new Observable.OnSubscribe<String>() {
-//                        @Override
-//                        public void call(Subscriber<? super String> subscriber) {
-//                            CommonOperate commonOperate = new CommonOperate(key, secret, false);
-//                            //detect first face by local file use base64
-//                            Response response3 = null;
-//                            try {
-//                                response3 = commonOperate.detectBase64(base64, 0, null);
-//                                String faceToken = getFaceToken(response3);
-//                                subscriber.onStart();
-//                                subscriber.onNext(faceToken);
-//                                subscriber.onCompleted();
-//                            } catch (Exception e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
-//                    }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-//                            .subscribe(new Subscriber<String>() {
-//                                @Override
-//                                public void onStart() {
-//                                    progress.setVisibility(View.VISIBLE);
-//                                    iv_circle.setVisibility(View.GONE);
-//                                }
-//
-//                                @Override
-//                                public void onCompleted() {
-//                                    progress.setVisibility(View.GONE);
-//                                    iv_circle.setVisibility(View.VISIBLE);
-//                                }
-//
-//                                @Override
-//                                public void onError(Throwable e) {
-//                                    e.printStackTrace();
-//                                }
-//
-//                                @Override
-//                                public void onNext(String sa) {
-//                                    if (sa!=null&&!sa.isEmpty()&&!sa.equals("")){
-//                                        isHasFace =true;
-//                                        iv_circle.setImageBitmap(mBitmap);
-//
-//                                    }else {
-//                                        isHasFace=false;
-//                                        iv_circle.setImageResource(R.drawable.camera);
-//                                        Toast.makeText(RegisterActivity.this,"选取的照片没有检测出人脸照，请重新选取",Toast.LENGTH_SHORT).show();
-//                                    }
-//                                }
-//                            });
                     presenter.addFaceInfo(base64);
                 }
             } else {
@@ -318,15 +250,4 @@ public class RegisterActivity extends BaseActivity implements IRegisterView {
     public void onShowFailMsg(String s) {
         Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
     }
-
-//    private String getFaceToken(Response response) throws JSONException {
-//        if(response.getStatus() != 200){
-//            return null;
-//        }
-//        String res = new String(response.getContent());
-//        LogUtils.e("response",res);
-//        JSONObject json = new JSONObject(res);
-//        String s = json.optJSONArray("faces").optJSONObject(0).optString("face_token");
-//        return s;
-//    }
 }

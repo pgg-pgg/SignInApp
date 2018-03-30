@@ -56,5 +56,4 @@ dependencies {
     compile files('lib/utdid4all-1.1.5.3_proguard.jar')
     compile project(':push_4.0.0')
     compile files('lib/universal-image-loader-1.8.7-snapshot-with-sources.jar')
-    compile files('lib/FaceppSDK.jar')
 }
