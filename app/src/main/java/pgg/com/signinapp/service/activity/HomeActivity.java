@@ -1,5 +1,6 @@
 package pgg.com.signinapp.service.activity;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -30,6 +31,7 @@ import pgg.com.signinapp.R;
 import pgg.com.signinapp.common.Constant;
 import pgg.com.signinapp.service.base.BaseActivity;
 import pgg.com.signinapp.service.domain.AddFaceInfo;
+import pgg.com.signinapp.util.MPermissionUtils;
 import pgg.com.signinapp.util.SPUtils;
 
 /**
@@ -63,7 +65,6 @@ public class HomeActivity extends BaseActivity implements LocationSource ,AMapLo
             return true;
         }
     };
-    private ProgressBar progressBar_add;
     private static double latitude;
     private static double longitude;
 
@@ -72,7 +73,6 @@ public class HomeActivity extends BaseActivity implements LocationSource ,AMapLo
         setContentView(R.layout.activity_main);
         toolbar= (Toolbar) findViewById(R.id.toolbar_view);
         mapView= (MapView) findViewById(R.id.map);
-        progressBar_add = (ProgressBar) findViewById(R.id.progressBar_add);
         toolbar.setTitle("签到");
         toolbar.inflateMenu(R.menu.navigation);
         toolbar.setOnMenuItemClickListener(onMenuItemClick);
@@ -100,7 +100,17 @@ public class HomeActivity extends BaseActivity implements LocationSource ,AMapLo
         myLocationStyle.radiusFillColor(android.R.color.transparent);
         myLocationStyle.strokeColor(android.R.color.transparent);
         aMap.setMyLocationStyle(myLocationStyle);
-        initLoc();
+        MPermissionUtils.requestPermissionsResult(this, 100, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, new MPermissionUtils.OnPermissionListener() {
+            @Override
+            public void onPermissionGranted() {
+                initLoc();
+            }
+
+            @Override
+            public void onPermissionDenied() {
+
+            }
+        });
     }
 
     private void initLoc() {

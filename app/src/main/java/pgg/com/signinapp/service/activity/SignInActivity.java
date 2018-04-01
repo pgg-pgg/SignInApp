@@ -153,6 +153,7 @@ public class SignInActivity extends BaseActivity implements ISignInView{
 
     @Override
     public void showSuccessMsg(Results<Location> data) {
+        finish();
         Toast.makeText(SignInActivity.this,data.getMessage()+"",Toast.LENGTH_SHORT).show();
     }
 

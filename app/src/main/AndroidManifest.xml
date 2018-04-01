@@ -58,9 +58,9 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/signin"
+        android:icon="@drawable/signin_icon"
         android:label="@string/app_name"
-        android:roundIcon="@drawable/signin"
+        android:roundIcon="@drawable/signin_icon"
         android:name=".global.MyApplication"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -77,7 +77,6 @@
         <activity android:name=".service.activity.LoginActivity"
             android:theme="@style/NoAppActionBar"
             android:windowSoftInputMode="stateHidden|stateAlwaysHidden"/>
-        <activity android:name=".MainActivity"/>
         <activity android:name=".service.activity.HomeActivity"/>
         <activity android:name=".service.activity.SignInActivity"/>
 

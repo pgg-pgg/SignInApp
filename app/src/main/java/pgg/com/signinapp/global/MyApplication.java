@@ -9,6 +9,8 @@ import com.umeng.message.IUmengRegisterCallback;
 import com.umeng.message.MsgConstant;
 import com.umeng.message.PushAgent;
 
+import org.android.agoo.huawei.HuaWeiRegister;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,6 +52,7 @@ public class MyApplication extends Application {
         mPushAgent.setNotificationPlaySound(MsgConstant.NOTIFICATION_PLAY_SDK_ENABLE); //声音
         mPushAgent.setNotificationPlayLights(MsgConstant.NOTIFICATION_PLAY_SDK_ENABLE);//呼吸灯
         mPushAgent.setNotificationPlayVibrate(MsgConstant.NOTIFICATION_PLAY_SDK_ENABLE);//振动
+        HuaWeiRegister.register(this);
 
         ImagePicker imagePicker = ImagePicker.getInstance();
         imagePicker.setShowCamera(true);  //显示拍照按钮

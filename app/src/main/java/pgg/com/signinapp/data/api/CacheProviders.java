@@ -24,7 +24,7 @@ import rx.Observable;
 
 public interface CacheProviders {
 
-    @LifeCache(duration = 2,timeUnit = TimeUnit.HOURS)
+    @LifeCache(duration = 2,timeUnit = TimeUnit.DAYS)
     Observable<Reply<User>> getUserResults(Observable observable, DynamicKey dynamicKey, EvictDynamicKey evictDynamicKey);
 
 

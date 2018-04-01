@@ -13,7 +13,6 @@ import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.animation.PropertyValuesHolder;
 
 import butterknife.Bind;
-import pgg.com.signinapp.MainActivity;
 import pgg.com.signinapp.R;
 import pgg.com.signinapp.service.base.BaseActivity;
 import pgg.com.signinapp.service.domain.Results;
