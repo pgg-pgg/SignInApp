@@ -10,6 +10,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 import java.io.ByteArrayOutputStream;
@@ -34,7 +35,7 @@ public class SignInActivity extends BaseActivity implements ISignInView{
     @Bind(R.id.button_capture)
     Button buttonCapture;
     @Bind(R.id.progressBar_camera)
-    View progressBar_camera;
+    ProgressBar progressBar_camera;
     private Camera mCamera;
     private CameraViewNew mPreview;
     private ISignInPresenter presenter;
