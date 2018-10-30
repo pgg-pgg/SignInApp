@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3"><dataSet config="main"><source path="E:\Android_project\SignInApp\push_4.0.0x\assets"/><source path="E:\Android_project\SignInApp\push_4.0.0x\build\generated\assets\shaders\release"/></dataSet><dataSet config="release"><source path="E:\Android_project\SignInApp\push_4.0.0x\build-types\release\assets"/></dataSet></merger>

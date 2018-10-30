@@ -14,7 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 import java.io.ByteArrayOutputStream;
-import butterknife.Bind;
+import butterknife.BindView;
 import pgg.com.signinapp.R;
 import pgg.com.signinapp.common.Constant;
 import pgg.com.signinapp.service.base.BaseActivity;
@@ -32,9 +32,9 @@ import pgg.com.signinapp.weiget.CameraViewNew;
 
 public class SignInActivity extends BaseActivity implements ISignInView{
     private static String TAG = "CameraObserver";
-    @Bind(R.id.button_capture)
+    @BindView(R.id.button_capture)
     Button buttonCapture;
-    @Bind(R.id.progressBar_camera)
+    @BindView(R.id.progressBar_camera)
     ProgressBar progressBar_camera;
     private Camera mCamera;
     private CameraViewNew mPreview;

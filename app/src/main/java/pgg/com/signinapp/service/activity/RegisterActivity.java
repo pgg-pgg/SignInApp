@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
 import android.util.Base64;
@@ -14,15 +16,19 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.ui.ImageGridActivity;
 import com.lzy.imagepicker.view.CropImageView;
 import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.animation.PropertyValuesHolder;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+
 import pgg.com.signinapp.R;
 import pgg.com.signinapp.common.Constant;
 import pgg.com.signinapp.service.base.BaseActivity;
@@ -61,8 +67,9 @@ public class RegisterActivity extends BaseActivity implements IRegisterView {
 
     private final String TAG = this.getClass().toString();
     private static String base64;
-    private static boolean isHasFace=false;
+    private static boolean isHasFace = false;
     private Bitmap mBitmap;
+    private int degree;
 
 
     @Override
@@ -156,7 +163,7 @@ public class RegisterActivity extends BaseActivity implements IRegisterView {
                 student_id = input_id.getText().toString();
                 name = input_name.getText().toString();
                 pwd = input_password.getText().toString();
-                if (base64 !=null&&isHasFace){
+                if (base64 != null && isHasFace) {
                     User user = new User();
                     user.setHead_icon(base64);
                     user.setId(student_id);
@@ -164,7 +171,7 @@ public class RegisterActivity extends BaseActivity implements IRegisterView {
                     user.setPassword(pwd);
                     user.setSex(0);
                     presenter.registerToServer(user);
-                }else {
+                } else {
                     Toast.makeText(RegisterActivity.this, "请上传你的头像", Toast.LENGTH_SHORT).show();
                 }
                 break;
@@ -193,7 +200,7 @@ public class RegisterActivity extends BaseActivity implements IRegisterView {
                 imagePicker.setOutPutX(Integer.valueOf(128));
                 imagePicker.setOutPutY(Integer.valueOf(128));
                 Intent intent = new Intent(RegisterActivity.this, ImageGridActivity.class);
-                intent.putExtra(ImageGridActivity.EXTRAS_IMAGES,images);
+                intent.putExtra(ImageGridActivity.EXTRAS_IMAGES, images);
                 startActivityForResult(intent, 100);
             }
 
@@ -210,13 +217,38 @@ public class RegisterActivity extends BaseActivity implements IRegisterView {
         if (resultCode == ImagePicker.RESULT_CODE_ITEMS) {
             if (data != null && requestCode == 100) {
                 images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
-                File file=new File(images.get(0).path);
-                if (file.exists()){
-                    BitmapFactory.Options options=new BitmapFactory.Options();
-                    options.inSampleSize=4;
-                    mBitmap = BitmapFactory.decodeFile(images.get(0).path,options);
+                File file = new File(images.get(0).path);
+                // 从指定路径下读取图片，并获取其EXIF信息
+                ExifInterface exifInterface = null;
+                try {
+                    exifInterface = new ExifInterface(images.get(0).path);
+                    // 获取图片的旋转信息
+                    int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                            ExifInterface.ORIENTATION_NORMAL);
+                    switch (orientation) {
+                        case ExifInterface.ORIENTATION_ROTATE_90:
+                            degree = 90;
+                            break;
+                        case ExifInterface.ORIENTATION_ROTATE_180:
+                            degree = 180;
+                            break;
+                        case ExifInterface.ORIENTATION_ROTATE_270:
+                            degree = 270;
+                            break;
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if (file.exists()) {
+                    BitmapFactory.Options options = new BitmapFactory.Options();
+                    options.inSampleSize =6;
+                    mBitmap = BitmapFactory.decodeFile(images.get(0).path, options);
+                    Matrix matrix = new Matrix();
+                    matrix.postRotate(degree);
+                    mBitmap = Bitmap.createBitmap(mBitmap, 0, 0, mBitmap.getWidth(), mBitmap.getHeight(), matrix, true);
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     mBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+//                    iv_circle.setImageBitmap(mBitmap);
                     byte[] bytes = baos.toByteArray();
                     base64 = new String(Base64.encode(bytes, Base64.DEFAULT));
                     presenter.addFaceInfo(base64);
@@ -226,6 +258,7 @@ public class RegisterActivity extends BaseActivity implements IRegisterView {
             }
         }
     }
+
     private void progressAnimator(final View view) {
         PropertyValuesHolder animator = PropertyValuesHolder.ofFloat("scaleX",
                 0.5f, 1f);
@@ -242,8 +275,8 @@ public class RegisterActivity extends BaseActivity implements IRegisterView {
     @Override
     public void onShowSuccessMsg(AddFaceInfo results) {
         iv_circle.setImageBitmap(mBitmap);
-        isHasFace=true;
-        Toast.makeText(this, "检测成功"+results.getFaceset_token(), Toast.LENGTH_SHORT).show();
+        isHasFace = true;
+        Toast.makeText(this, "检测成功" + results.getFaceset_token(), Toast.LENGTH_SHORT).show();
     }
 
     @Override

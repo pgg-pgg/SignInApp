@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="pgg.com.signinapp">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
@@ -81,6 +82,19 @@
         <activity android:name=".service.activity.SignInActivity"/>
 
 
+        <!--<provider-->
+            <!--android:name=".provider.MyProvider"-->
+            <!--android:authorities="com.lzy.imagepicker.ImagePickerProvider"-->
+            <!--android:exported="false"-->
+            <!--android:grantUriPermissions="true"-->
+            <!--tools:replace="name,authorities,exported,grantUriPermissions"-->
+            <!--&gt;-->
+            <!--<meta-data-->
+                <!--android:name="android.support.FILE_PROVIDER_PATHS"-->
+                <!--android:resource="@xml/provider_paths"-->
+                <!--tools:replace="name,resource"-->
+                <!--/>-->
+        <!--</provider>-->
 
         <service android:name="com.amap.api.location.APSService"/>
 

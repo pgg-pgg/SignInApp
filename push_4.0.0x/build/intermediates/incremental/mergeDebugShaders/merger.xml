@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3"><dataSet config="main"><source path="/home/pgg/android_project/SignInApp/push_4.0.0x/src/main/shaders"/></dataSet><dataSet config="debug"><source path="/home/pgg/android_project/SignInApp/push_4.0.0x/build-types/debug/shaders"/></dataSet></merger>

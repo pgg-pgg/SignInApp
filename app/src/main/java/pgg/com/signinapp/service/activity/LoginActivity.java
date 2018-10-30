@@ -12,7 +12,8 @@ import android.widget.Toast;
 import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.animation.PropertyValuesHolder;
 
-import butterknife.Bind;
+
+import butterknife.BindView;
 import pgg.com.signinapp.R;
 import pgg.com.signinapp.service.base.BaseActivity;
 import pgg.com.signinapp.service.domain.Results;
@@ -27,24 +28,24 @@ import pgg.com.signinapp.weiget.JellyInterpolator;
 
 public class LoginActivity extends BaseActivity implements ILoginView{
 
-    @Bind(R.id.tv_right)
+    @BindView(R.id.tv_right)
     TextView tv_right;
-    @Bind(R.id.main_btn_login)
+    @BindView(R.id.main_btn_login)
     TextView main_btn_login;
-    @Bind(R.id.layout_progress)
+    @BindView(R.id.layout_progress)
     View progress;
-    @Bind(R.id.input_layout)
+    @BindView(R.id.input_layout)
     View mInputLayout;
-    @Bind(R.id.edit_id)
+    @BindView(R.id.edit_id)
     EditText edit_id;
-    @Bind(R.id.edit_password)
+    @BindView(R.id.edit_password)
     EditText edit_password;
-    @Bind(R.id.input_layout_name)
+    @BindView(R.id.input_layout_name)
     LinearLayout mName;
-    @Bind(R.id.input_layout_psw)
+    @BindView(R.id.input_layout_psw)
     LinearLayout mPsw;
 
-    @Bind(R.id.ll_head)
+    @BindView(R.id.ll_head)
     LinearLayout ll_head;
 
     private ILoginPresenter presenter;

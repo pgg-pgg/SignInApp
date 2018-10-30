@@ -6,8 +6,9 @@ package pgg.com.signinapp.common;
 
 public interface Constant {
 
+    String BASE_URL="http://47.93.24.192:8080/signinserver-0.0.1-SNAPSHOT/";
     //String BASE_URL="http://192.168.155.1:8080/";//wifi共享
-    String BASE_URL="http://192.168.1.106:8080/";//实验室wifi
+    //String BASE_URL="http://192.168.1.106:8080/";//实验室wifi
 
     String faceApi="https://api-cn.faceplusplus.com/facepp/v3/";
 
